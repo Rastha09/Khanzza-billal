@@ -1,0 +1,754 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Khanzza Billal Store - Toko Roti Online</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Main Styles */
+        .floating-logout {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 100;
+            background-color: #dc3545;
+            border: none;
+            border-radius: 50%;
+            padding: 15px;
+            transition: background-color 0.3s;
+        }
+
+        .floating-logout:hover {
+            background-color: #c82333;
+            cursor: pointer;
+        }
+
+        .floating-logout:focus {
+            outline: none;
+        }
+
+        .floating-logout i {
+            color: #fff;
+            font-size: 1.5rem;
+        }
+
+        .product-card {
+            transition: transform 0.2s;
+        }
+
+        .product-card:hover {
+            transform: scale(1.03);
+        }
+
+        .banner-section {
+            background-color: #f8f9fa;
+            padding: 20px 0;
+        }
+
+        .custom-search {
+            background-color: #f8f9fa;
+            border-radius: 20px;
+        }
+
+        .rating {
+            color: #ffc107;
+        }
+
+        .product-description {
+            font-size: 0.85rem;
+            color: #6c757d;
+            margin-bottom: 1rem;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+            line-height: 1.4;
+            min-height: 4.2rem;
+        }
+
+        .sold-badge {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background-color: rgba(0, 0, 0, 0.7);
+            color: white;
+            padding: 3px 8px;
+            border-radius: 10px;
+            font-size: 0.75rem;
+            font-weight: 500;
+        }
+
+        /* Auth Overlay Styles */
+        .auth-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.9);
+            z-index: 9999;
+            display: none;
+            justify-content: center;
+            align-items: center;
+            backdrop-filter: blur(5px);
+        }
+
+        .auth-box {
+            background: white;
+            padding: 2rem;
+            border-radius: 15px;
+            width: 90%;
+            max-width: 400px;
+            box-shadow: 0 5px 30px rgba(0, 0, 0, 0.3);
+            animation: fadeIn 0.3s ease-out;
+        }
+
+        .auth-title {
+            margin-bottom: 1.5rem;
+            color: #333;
+            text-align: center;
+            font-weight: 600;
+        }
+
+        .auth-form .form-control {
+            margin-bottom: 1rem;
+            padding: 12px 15px;
+            border-radius: 8px;
+            border: 1px solid #ddd;
+        }
+
+        .auth-btn {
+            width: 100%;
+            padding: 12px;
+            font-weight: 500;
+            border-radius: 8px;
+            transition: all 0.3s;
+        }
+
+        .auth-footer {
+            margin-top: 1.5rem;
+            text-align: center;
+            font-size: 0.9rem;
+        }
+
+        .auth-toggle {
+            color: #28a745;
+            cursor: pointer;
+            font-weight: 500;
+        }
+
+        .auth-toggle:hover {
+            text-decoration: underline;
+        }
+
+        .error-message {
+            color: #dc3545;
+            font-size: 0.9rem;
+            margin-top: -0.5rem;
+            margin-bottom: 1rem;
+            padding: 8px;
+            background-color: rgba(220, 53, 69, 0.1);
+            border-radius: 5px;
+            display: none;
+        }
+
+        .success-message {
+            color: #28a745;
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+            padding: 8px;
+            background-color: rgba(40, 167, 69, 0.1);
+            border-radius: 5px;
+            display: none;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Carousel Styles */
+        .custom-indicators {
+            position: absolute;
+            bottom: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 10px;
+        }
+
+        .ellipsis-indicator {
+            font-size: 1.5rem;
+            color: #6c757d;
+            cursor: pointer;
+            transition: color 0.3s, transform 0.3s;
+        }
+
+        .ellipsis-indicator.active {
+            color: #28a745;
+            transform: scale(1.2);
+        }
+
+        .ellipsis-indicator:hover {
+            color: #28a745;
+        }
+
+        .carousel-control-prev,
+        .carousel-control-next {
+            width: 10%;
+            background-color: rgba(0, 0, 0, 0.4);
+            opacity: 0.7;
+            transition: opacity 0.3s;
+        }
+
+        .carousel-control-prev:hover,
+        .carousel-control-next:hover {
+            opacity: 1;
+        }
+
+        .carousel-item img {
+            max-height: 300px;
+            object-fit: cover;
+        }
+
+        /* Loading Overlay Styles */
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.8);
+            z-index: 10000;
+            display: none;
+            justify-content: center;
+            align-items: center;
+            backdrop-filter: blur(5px);
+        }
+
+        .loading-spinner {
+            text-align: center;
+        }
+
+        .spinner {
+            width: 50px;
+            height: 50px;
+            animation: spin 1.2s linear infinite;
+        }
+
+        .spinner .path {
+            stroke: #28a745;
+            stroke-linecap: round;
+            animation: dash 1.5s ease-in-out infinite, gradient 6s ease-in-out infinite;
+        }
+
+        .loading-text {
+            color: #fff;
+            font-size: 1rem;
+            margin-top: 10px;
+            font-weight: 500;
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes spin {
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        @keyframes dash {
+            0% {
+                stroke-dasharray: 1, 150;
+                stroke-dashoffset: 0;
+            }
+            50% {
+                stroke-dasharray: 90, 150;
+                stroke-dashoffset: -35;
+            }
+            100% {
+                stroke-dasharray: 90, 150;
+                stroke-dashoffset: -124;
+            }
+        }
+
+        @keyframes gradient {
+            0% {
+                stroke: #28a745;
+            }
+            50% {
+                stroke: #17a2b8;
+            }
+            100% {
+                stroke: #28a745;
+            }
+        }
+
+        @keyframes pulse {
+            0% {
+                opacity: 1;
+            }
+            50% {
+                opacity: 0.5;
+            }
+            100% {
+                opacity: 1;
+            }
+        }
+
+        /* Responsive Adjustments */
+        @media (max-width: 576px) {
+            .product-description {
+                font-size: 0.8rem;
+                -webkit-line-clamp: 2;
+                min-height: 2.8rem;
+            }
+
+            .auth-box {
+                padding: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header Section -->
+    <header class="sticky-top bg-white shadow-sm py-3">
+        <div class="container">
+            <div class="d-flex align-items-center justify-content-between">
+                <h1 class="h4 mb-0 me-2">
+                    <span class="text-primary">Khanzza</span>Billal
+                </h1>
+                <div class="input-group custom-search me-2">
+                    <input type="text" class="form-control border-0 bg-transparent" placeholder="Cari roti..." id="searchInput">
+                    <button class="btn btn-outline-secondary border-0" type="button" onclick="searchProducts()">
+                        <i class="fas fa-search"></i>
+                    </button>
+                </div>
+                <a href="cart.html" class="btn btn-outline-primary position-relative me-2">
+                    <i class="fas fa-shopping-cart"></i>
+                    <span id="cartCount" class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">0</span>
+                </a>
+                <a href="order-history.html" class="btn btn-outline-primary">
+                    <i class="fas fa-history"></i>
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="container py-4">
+        <!-- Banner Promo Section -->
+        <section class="banner-section">
+            <div class="container text-center">
+                <h2 class="fw-bold mb-3">Roti Berkualitas, Segar Setiap Hari</h2>
+                <div id="promoCarousel" class="carousel slide" data-bs-ride="carousel">
+                    <div class="carousel-inner">
+                        <div class="carousel-item active">
+                            <img src="images/banner_promo_1.jpg" class="d-block w-100 rounded-3 shadow" alt="Promo 1" onerror="this.src='https://via.placeholder.com/600x200?text=Promo+Spesial+1'">
+                        </div>
+                        <div class="carousel-item">
+                            <img src="images/banner_promo_2.jpg" class="d-block w-100 rounded-3 shadow" alt="Promo 2" onerror="this.src='https://via.placeholder.com/600x200?text=Promo+Spesial+2'">
+                        </div>
+                        <div class="carousel-item">
+                            <img src="images/banner_promo_3.jpg" class="d-block w-100 rounded-3 shadow" alt="Promo 3" onerror="this.src='https://via.placeholder.com/600x200?text=Promo+Spesial+3'">
+                        </div>
+                    </div>
+                    <div class="carousel-indicators custom-indicators">
+                        <span class="ellipsis-indicator active" data-bs-target="#promoCarousel" data-bs-slide-to="0" aria-label="Slide 1">...</span>
+                        <span class="ellipsis-indicator" data-bs-target="#promoCarousel" data-bs-slide-to="1" aria-label="Slide 2">...</span>
+                        <span class="ellipsis-indicator" data-bs-target="#promoCarousel" data-bs-slide-to="2" aria-label="Slide 3">...</span>
+                    </div>
+                    <button class="carousel-control-prev" type="button" data-bs-target="#promoCarousel" data-bs-slide="prev">
+                        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                        <span class="visually-hidden">Previous</span>
+                    </button>
+                    <button class="carousel-control-next" type="button" data-bs-target="#promoCarousel" data-bs-slide="next">
+                        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                        <span class="visually-hidden">Next</span>
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Product Grid Section -->
+        <section class="py-4">
+            <div class="container">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h3 class="fw-bold mb-0">Produk Kami</h3>
+                    <div class="dropdown">
+                        <button class="btn btn-outline-secondary dropdown-toggle" type="button" id="sortDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                            Urutkan
+                        </button>
+                        <ul class="dropdown-menu" aria-labelledby="sortDropdown">
+                            <li><a class="dropdown-item" href="#" onclick="sortProducts('terbaru')">Terbaru</a></li>
+                            <li><a class="dropdown-item" href="#" onclick="sortProducts('terlaris')">Terlaris</a></li>
+                            <li><a class="dropdown-item" href="#" onclick="sortProducts('termurah')">Harga (Murah)</a></li>
+                            <li><a class="dropdown-item" href="#" onclick="sortProducts('termahal')">Harga (Mahal)</a></li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="row" id="productsContainer">
+                    <!-- Product 1 -->
+                    <div class="col-6 col-md-4 mb-4">
+                        <div class="card product-card h-100" id="product-1">
+                            <div class="position-relative">
+                                <img src="images/produk 1.png" class="card-img-top" alt="Roti Keju Slice Isi Blueberry" onerror="this.src='https://via.placeholder.com/150?text=Roti+Keju+Slice+Isi+Blueberry'">
+                                <span class="sold-badge"><i class="fas fa-fire"></i> <span class="sold-count">120</span> terjual</span>
+                            </div>
+                            <div class="card-body">
+                                <h5 class="card-title">Roti Keju Slice Isi Blueberry</h5>
+                                <p class="card-text text-muted">Rp5.000</p>
+                                <div class="rating mb-2">
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="far fa-star"></i>
+                                    <span class="text-muted ms-2">(4.0)</span>
+                                </div>
+                                <p class="product-description">
+                                    Roti lembut dengan keju meleleh dan selai blueberry manis.
+                                </p>
+                                <div class="d-flex justify-content-between">
+                                    <button class="btn btn-outline-primary btn-cart" onclick="addToCart(1)">
+                                        <i class="fas fa-shopping-cart"></i> +
+                                    </button>
+                                    <button class="btn btn-primary btn-buy" onclick="redirectToCheckout(1)">
+                                        <i class="fas fa-bag-shopping"></i> Beli
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Product 2 -->
+                    <div class="col-6 col-md-4 mb-4">
+                        <div class="card product-card h-100" id="product-2">
+                            <div class="position-relative">
+                                <img src="images/produk 2.png" class="card-img-top" alt="Roti Pisang Coklat" onerror="this.src='https://via.placeholder.com/150?text=Roti+Pisang+Coklat'">
+                                <span class="sold-badge"><i class="fas fa-fire"></i> <span class="sold-count">215</span> terjual</span>
+                            </div>
+                            <div class="card-body">
+                                <h5 class="card-title">Roti Pisang Coklat</h5>
+                                <p class="card-text text-muted">Rp5.000</p>
+                                <div class="rating mb-2">
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star-half-alt"></i>
+                                    <span class="text-muted ms-2">(4.5)</span>
+                                </div>
+                                <p class="product-description">
+                                    Roti lembut berisi pisang manis dan cokelat lumer. Sempurna untuk camilan.
+                                </p>
+                                <div class="d-flex justify-content-between">
+                                    <button class="btn btn-outline-primary btn-cart" onclick="addToCart(2)">
+                                        <i class="fas fa-shopping-cart"></i> +
+                                    </button>
+                                    <button class="btn btn-primary btn-buy" onclick="redirectToCheckout(2)">
+                                        <i class="fas fa-bag-shopping"></i> Beli
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Product 3 -->
+                    <div class="col-6 col-md-4 mb-4">
+                        <div class="card product-card h-100" id="product-3">
+                            <div class="position-relative">
+                                <img src="images/produk 3.png" class="card-img-top" alt="Roti Isi Sosis" onerror="this.src='https://via.placeholder.com/150?text=Roti+Isi+Sosis'">
+                                <span class="sold-badge"><i class="fas fa-fire"></i> <span class="sold-count">350</span> terjual</span>
+                            </div>
+                            <div class="card-body">
+                                <h5 class="card-title">Roti Isi Sosis</h5>
+                                <p class="card-text text-muted">Rp5.000</p>
+                                <div class="rating mb-2">
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <span class="text-muted ms-2">(5.0)</span>
+                                </div>
+                                <p class="product-description">
+                                    Roti gurih dengan sosis premium dan saus spesial. Cocok untuk sarapan.
+                                </p>
+                                <div class="d-flex justify-content-between">
+                                    <button class="btn btn-outline-primary btn-cart" onclick="addToCart(3)">
+                                        <i class="fas fa-shopping-cart"></i> +
+                                    </button>
+                                    <button class="btn btn-primary btn-buy" onclick="redirectToCheckout(3)">
+                                        <i class="fas fa-bag-shopping"></i> Beli
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Product 4 -->
+                    <div class="col-6 col-md-4 mb-4">
+                        <div class="card product-card h-100" id="product-4">
+                            <div class="position-relative">
+                                <img src="images/produk 4.png" class="card-img-top" alt="Roti Roll Abon" onerror="this.src='https://via.placeholder.com/150?text=Roti+Roll+Abon'">
+                                <span class="sold-badge"><i class="fas fa-fire"></i> <span class="sold-count">180</span> terjual</span>
+                            </div>
+                            <div class="card-body">
+                                <h5 class="card-title">Roti Roll Abon</h5>
+                                <p class="card-text text-muted">Rp5.000</p>
+                                <div class="rating mb-2">
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="far fa-star"></i>
+                                    <span class="text-muted ms-2">(4.0)</span>
+                                </div>
+                                <p class="product-description">
+                                    Roti gulung renyah dengan taburan abon sapi gurih. Nikmat untuk camilan.
+                                </p>
+                                <div class="d-flex justify-content-between">
+                                    <button class="btn btn-outline-primary btn-cart" onclick="addToCart(4)">
+                                        <i class="fas fa-shopping-cart"></i> +
+                                    </button>
+                                    <button class="btn btn-primary btn-buy" onclick="redirectToCheckout(4)">
+                                        <i class="fas fa-bag-shopping"></i> Beli
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Product 5 -->
+                    <div class="col-6 col-md-4 mb-4">
+                        <div class="card product-card h-100" id="product-5">
+                            <div class="position-relative">
+                                <img src="images/produk 5.png" class="card-img-top" alt="Roti Abon Bullet" onerror="this.src='https://via.placeholder.com/150?text=Roti+Abon+Bullet'">
+                                <span class="sold-badge"><i class="fas fa-fire"></i> <span class="sold-count">250</span> terjual</span>
+                            </div>
+                            <div class="card-body">
+                                <h5 class="card-title">Roti Abon Bullet</h5>
+                                <p class="card-text text-muted">Rp5.000</p>
+                                <div class="rating mb-2">
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star-half-alt"></i>
+                                    <span class="text-muted ms-2">(4.5)</span>
+                                </div>
+                                <p class="product-description">
+                                    Roti mini berisi abon sapi gurih. Pas untuk camilan praktis.
+                                </p>
+                                <div class="d-flex justify-content-between">
+                                    <button class="btn btn-outline-primary btn-cart" onclick="addToCart(5)">
+                                        <i class="fas fa-shopping-cart"></i> +
+                                    </button>
+                                    <button class="btn btn-primary btn-buy" onclick="redirectToCheckout(5)">
+                                        <i class="fas fa-bag-shopping"></i> Beli
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Product 6 -->
+                    <div class="col-6 col-md-4 mb-4">
+                        <div class="card product-card h-100" id="product-6">
+                            <div class="position-relative">
+                                <img src="images/produk 6.png" class="card-img-top" alt="Roti Abon Panjang" onerror="this.src='https://via.placeholder.com/150?text=Roti+Abon+Panjang'">
+                                <span class="sold-badge"><i class="fas fa-fire"></i> <span class="sold-count">300</span> terjual</span>
+                            </div>
+                            <div class="card-body">
+                                <h5 class="card-title">Roti Abon Panjang</h5>
+                                <p class="card-text text-muted">Rp5.000</p>
+                                <div class="rating mb-2">
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <span class="text-muted ms-2">(5.0)</span>
+                                </div>
+                                <p class="product-description">
+                                    Roti panjang dengan abon sapi melimpah. Gurih dan lezat.
+                                </p>
+                                <div class="d-flex justify-content-between">
+                                    <button class="btn btn-outline-primary btn-cart" onclick="addToCart(6)">
+                                        <i class="fas fa-shopping-cart"></i> +
+                                    </button>
+                                    <button class="btn btn-primary btn-buy" onclick="redirectToCheckout(6)">
+                                        <i class="fas fa-bag-shopping"></i> Beli
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Product 7 -->
+                    <div class="col-6 col-md-4 mb-4">
+                        <div class="card product-card h-100" id="product-7">
+                            <div class="position-relative">
+                                <img src="images/produk 7.png" class="card-img-top" alt="Roti Keju Isi Coklat" onerror="this.src='https://via.placeholder.com/150?text=Roti+Keju+Isi+Coklat'">
+                                <span class="sold-badge"><i class="fas fa-fire"></i> <span class="sold-count">300</span> terjual</span>
+                            </div>
+                            <div class="card-body">
+                                <h5 class="card-title">Roti Keju Isi Coklat</h5>
+                                <p class="card-text text-muted">Rp5.000</p>
+                                <div class="rating mb-2">
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <span class="text-muted ms-2">(5.0)</span>
+                                </div>
+                                <p class="product-description">
+                                    Roti lembut dengan keju dan cokelat lumer. Manis dan lezat.
+                                </p>
+                                <div class="d-flex justify-content-between">
+                                    <button class="btn btn-outline-primary btn-cart" onclick="addToCart(7)">
+                                        <i class="fas fa-shopping-cart"></i> +
+                                    </button>
+                                    <button class="btn btn-primary btn-buy" onclick="redirectToCheckout(7)">
+                                        <i class="fas fa-bag-shopping"></i> Beli
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- About Us Section -->
+        <section class="py-4 bg-light" id="tentang-kami">
+            <div class="container">
+                <h3 class="fw-bold mb-3">Tentang Kami</h3>
+                <div class="row align-items-center">
+                    <div class="col-md-6 mb-3 mb-md-0">
+                        <img src="images/logo1.png" alt="Khanzza Billal Store" class="img-fluid rounded" onerror="this.src='https://via.placeholder.com/300?text=Logo+Makka+Bakerry'">
+                    </div>
+                    <div class="col-md-6">
+                        <p class="lead">Khanzza Billal store menyediakan roti segar dan berkualitas setiap hari.</p>
+                        <p>Kami menggunakan bahan pilihan tanpa pengawet, dipanggang dengan resep tradisional untuk cita rasa terbaik.</p>
+                        <p>Dengan lebih dari <span id="totalYearlySales">0</span> produk terjual tahun ini, kepuasan pelanggan adalah prioritas kami.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer Section -->
+    <footer class="bg-dark text-white py-4">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-4 mb-3 mb-md-0">
+                    <h5 class="fw-bold">Khanzza Billal Store</h5>
+                    <p class="small">Toko roti online dengan pilihan roti segar setiap hari.</p>
+                </div>
+                <div class="col-md-4 mb-3 mb-md-0">
+                    <h5>Kontak Kami</h5>
+                    <ul class="list-unstyled">
+                        <li><i class="fas fa-map-marker-alt me-2"></i> Komplek bermis blok b6 no.2, rt 011 rw 001, pluit, penjaringan, jakarta utara</li>
+                        <li><i class="fas fa-phone me-2"></i> 085-688-214-74</li>
+                        <li><i class="fas fa-envelope me-2"></i> info@khanzzabillalstore.com</li>
+                    </ul>
+                </div>
+                <div class="col-md-4">
+                    <h5>Jam Buka</h5>
+                    <ul class="list-unstyled">
+                        <li>Senin - Jumat: 07:00 - 20:00</li>
+                        <li>Sabtu - Minggu: 08:00 - 18:00</li>
+                    </ul>
+                </div>
+            </div>
+            <hr class="my-3">
+            <div class="text-center small">
+                &copy; 2025 Khanzza Billal Store. All Rights Reserved.
+            </div>
+        </div>
+    </footer>
+
+    <!-- Floating Logout Button -->
+    <button id="floatingLogoutBtn" class="floating-logout btn btn-danger rounded-circle p-3 shadow-lg" style="display: none;">
+        <i class="fas fa-sign-out-alt fs-4"></i>
+    </button>
+
+    <!-- Authentication Overlay -->
+    <div id="authOverlay" class="auth-overlay" style="display: none;">
+        <div class="auth-box">
+            <!-- Login Form -->
+            <div id="loginForm">
+                <h3 class="auth-title">Login ke Akun Anda</h3>
+                <div id="loginError" class="error-message"></div>
+                <form class="auth-form" id="loginEmailForm">
+                    <input type="email" id="loginEmail" class="form-control" placeholder="Email" required>
+                    <input type="password" id="loginPassword" class="form-control" placeholder="Password" required>
+                    <button type="submit" class="btn btn-success auth-btn">
+                        <i class="fas fa-sign-in-alt me-2"></i> Login
+                    </button>
+                </form>
+                <div class="auth-footer">
+                    <p>Belum punya akun? <span class="auth-toggle" onclick="showRegisterForm()">Daftar di sini</span></p>
+                    <p><span class="auth-toggle" onclick="showForgotPasswordForm()">Lupa password?</span></p>
+                </div>
+            </div>
+
+            <!-- Register Form -->
+            <div id="registerForm" style="display: none;">
+                <h3 class="auth-title">Daftar Akun Baru</h3>
+                <div id="registerError" class="error-message"></div>
+                <div id="registerSuccess" class="success-message"></div>
+                <form class="auth-form" id="registerEmailForm">
+                    <input type="text" id="registerName" class="form-control" placeholder="Nama Lengkap" required>
+                    <input type="email" id="registerEmail" class="form-control" placeholder="Email" required>
+                    <input type="password" id="registerPassword" class="form-control" placeholder="Password (min 6 karakter)" required minlength="6">
+                    <button type="submit" class="btn btn-success auth-btn">
+                        <i class="fas fa-user-plus me-2"></i> Daftar
+                    </button>
+                </form>
+                <div class="auth-footer">
+                    <p>Sudah punya akun? <span class="auth-toggle" onclick="showLoginForm()">Login di sini</span></p>
+                </div>
+            </div>
+
+            <!-- Forgot Password Form -->
+            <div id="forgotPasswordForm" style="display: none;">
+                <h3 class="auth-title">Reset Password</h3>
+                <div id="forgotError" class="error-message"></div>
+                <div id="forgotSuccess" class="success-message"></div>
+                <form class="auth-form" id="forgotPasswordEmailForm">
+                    <input type="email" id="forgotEmail" class="form-control" placeholder="Email" required>
+                    <button type="submit" class="btn btn-success auth-btn">
+                        <i class="fas fa-paper-plane me-2"></i> Kirim Reset Link
+                    </button>
+                </form>
+                <div class="auth-footer">
+                    <p><span class="auth-toggle" onclick="showLoginForm()">Kembali ke Login</span></p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+<div id="loadingOverlay" class="loading-overlay" style="display: none;">
+    <div id="lottie-loading" style="width: 100px; height: 100px;"></div>
+    <p class="loading-text">Sedang menuju halaman checkout ...</p>
+</div>
+
+<!-- External Scripts -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bodymovin/5.9.6/lottie.min.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+<script src="js/main.js"></script>
+
+</body>
+</html>

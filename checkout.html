@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Checkout - Makka Bakerry</title>
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <style>
+    .product-img {
+      width: 60px; height: 60px;
+      object-fit: cover;
+      border: 1px solid #eee;
+      border-radius: 8px;
+      opacity: 0; transition: opacity 0.3s ease;
+    }
+    .product-img.loaded { opacity: 1; }
+    @media (max-width: 480px) {
+      .product-img { height: 48px; width: 48px; }
+    }
+    .summary-card { position: sticky; top: 20px; }
+    .delivery-option, .payment-option {
+      border: 1px solid #dee2e6; border-radius: 8px;
+      padding: 15px; margin-bottom: 10px;
+      cursor: pointer; transition: all 0.3s;
+    }
+    .delivery-option:hover, .payment-option:hover {
+      border-color: #0d6efd; background-color: #f8f9fa;
+    }
+    .delivery-option.selected, .payment-option.selected {
+      border-color: #0d6efd; background-color: #f0f7ff;
+    }
+    .form-control:focus, .form-select:focus {
+      border-color: #ffc107;
+      box-shadow: 0 0 0 0.25rem rgba(255, 193, 7, 0.25);
+    }
+    /* Loading Overlay */
+    .loading-overlay {
+      position: fixed; inset: 0;
+      background: rgba(0,0,0,0.8);
+      z-index: 10000; display: none;
+      justify-content: center; align-items: center;
+      backdrop-filter: blur(5px);
+    }
+    .loading-text {
+      color: #fff; font-size: 1rem; margin-top: 10px; font-weight: 500;
+      animation: pulse 2s ease-in-out infinite;
+    }
+    @keyframes pulse {
+      0% { opacity: 1; } 50% { opacity: 0.5; } 100% { opacity: 1; }
+    }
+  </style>
+</head>
+<body>
+  <!-- Header -->
+  <header class="bg-white shadow-sm py-3 sticky-top">
+    <div class="container d-flex align-items-center">
+      <a href="cart.html" class="btn btn-outline-secondary me-3">
+        <i class="fas fa-arrow-left"></i>
+      </a>
+      <h1 class="h4 mb-0 fw-bold">
+        <span class="text-primary">Checkout</span> Pesanan
+      </h1>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main class="container py-4">
+    <div class="row">
+      <!-- Left Column -->
+      <div class="col-lg-8">
+        <!-- Shipping Info -->
+        <div class="card mb-4">
+          <div class="card-body">
+            <h5 class="card-title mb-4">
+              <i class="fas fa-truck me-2 text-primary"></i> Informasi Pengiriman
+            </h5>
+            <form id="shippingForm" class="row g-3">
+              <div class="col-md-6">
+                <label for="nama" class="form-label">Nama Penerima</label>
+                <input type="text" class="form-control" id="nama" required>
+              </div>
+              <div class="col-md-6">
+                <label for="telepon" class="form-label">Nomor Telepon</label>
+                <input type="tel" class="form-control" id="telepon" required>
+              </div>
+              <div class="col-12">
+                <label for="alamat" class="form-label">Alamat Lengkap</label>
+                <textarea class="form-control" id="alamat" required></textarea>
+              </div>
+              <div class="col-md-6">
+                <label for="provinsi" class="form-label">Provinsi</label>
+                <select class="form-select" id="provinsi" required>
+                  <option value="Jawa Barat">Jawa Barat</option>
+                </select>
+              </div>
+              <div class="col-md-6">
+                <label for="kota" class="form-label">Kota/Kabupaten</label>
+                <select class="form-select" id="kota" required>
+                  <option value="Indramayu" selected>Indramayu</option>
+                </select>
+              </div>
+              <div class="col-md-6">
+                <label for="kecamatan" class="form-label">Kecamatan</label>
+                <select class="form-select" id="kecamatan" required>
+                  <option value="Lelea" selected>Lelea</option>
+                  <option value="Tugu">Tugu</option>
+                  <option value="Lohbener">Lohbener</option>
+                </select>
+              </div>
+            </form>
+          </div>
+        </div>
+
+        <!-- Delivery Options -->
+        <div class="card mb-4">
+          <div class="card-body">
+            <h5 class="card-title mb-4">
+              <i class="fas fa-shipping-fast me-2 text-primary"></i> Metode Pengiriman
+            </h5>
+            <div class="delivery-options-container">
+              <!-- opsi pengiriman render dinamis -->
+            </div>
+          </div>
+        </div>
+
+        <!-- Payment Options -->
+        <div class="card mb-4">
+          <div class="card-body">
+            <h5 class="card-title mb-4">
+              <i class="fas fa-credit-card me-2 text-primary"></i> Metode Pembayaran
+            </h5>
+            <div id="paymentOptionsContainer">
+              <!-- opsi pembayaran render dinamis -->
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right Column -->
+      <div class="col-lg-4">
+        <!-- Order Notes -->
+        <div class="card mb-4">
+          <div class="card-body">
+            <h5 class="card-title">Catatan Pesanan (Opsional)</h5>
+            <textarea id="customerNotes" class="form-control" rows="3" maxlength="200"
+              placeholder="Contoh: Roti dipotong 4 bagian, dll"></textarea>
+            <small class="text-muted">Maksimal 200 karakter</small>
+          </div>
+        </div>
+
+        <!-- Order Summary -->
+        <div class="card summary-card mb-4">
+          <div class="card-body" id="order-summary">
+            <!-- ringkasan pesanan render dinamis -->
+            <div class="d-grid">
+              <button id="checkoutBtn" class="btn btn-success btn-lg">
+                <i class="fas fa-shopping-cart me-2"></i> Bayar Sekarang
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Loading Overlay -->
+  <div id="loadingOverlay" class="loading-overlay">
+    <div>
+      <div class="spinner-border text-light" role="status"></div>
+      <p class="loading-text">Sabar, pesanan sedang diproses...</p>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/bodymovin/5.9.6/lottie.min.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+  <script src="js/checkout.js"></script>
+</body>
+</html>

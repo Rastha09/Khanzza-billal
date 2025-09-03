@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Keranjang Belanja - Makka Bakerry</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Shopee-like colors */
+        :root {
+            --shopee-primary: #EE4D2D;
+            --shopee-secondary: #FFBDA6;
+            --shopee-text: #333;
+            --shopee-background: #F5F5F5;
+        }
+
+        /* Card styling */
+        .card {
+            border: none;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        /* Cart item styling */
+        .cart-item {
+            padding: 12px 0;
+            border-bottom: 1px solid #f0f0f0;
+            transition: background-color 0.2s;
+        }
+
+        .cart-item:hover {
+            background-color: #f9f9f9;
+        }
+
+        /* Product image */
+        .product-img {
+            width: 80px;
+            height: 80px;
+            object-fit: cover;
+            border-radius: 8px;
+            border: 1px solid #eee;
+        }
+
+        /* Price text */
+        .text-danger {
+            color: var(--shopee-primary) !important;
+            font-weight: 600;
+        }
+
+        /* Checkbox styling */
+        .form-check-input {
+            width: 18px;
+            height: 18px;
+            margin-top: 0;
+            cursor: pointer;
+        }
+
+        .form-check-label {
+            margin-left: 5px;
+            cursor: pointer;
+        }
+
+        .item-checkbox {
+            margin-right: 10px;
+        }
+
+        /* Delete button styling */
+        .btn-remove {
+            padding: 0.25rem 0.75rem;
+            font-size: 0.8rem;
+            border-radius: 4px;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .btn-remove:hover {
+            background-color: #f8d7da;
+        }
+
+        /* Quantity selector styling */
+        .quantity-selector {
+            width: 120px;
+        }
+
+        .quantity-input {
+            height: 32px;
+            text-align: center;
+            border-left: none;
+            border-right: none;
+            font-weight: 500;
+        }
+
+        .quantity-minus, .quantity-plus {
+            width: 32px;
+            padding: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: #f8f9fa;
+            transition: all 0.2s;
+        }
+
+        .quantity-minus:hover, .quantity-plus:hover {
+            background-color: var(--shopee-primary);
+            color: white;
+        }
+
+        .input-group-sm > .btn {
+            line-height: 1;
+        }
+
+        /* Checkout bar */
+        .sticky-summary {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background-color: white;
+            box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
+            padding: 15px 0;
+            z-index: 99; /* Below loading overlay */
+        }
+
+        .sticky-summary .btn-primary {
+            background-color: var(--shopee-primary);
+            border-color: var(--shopee-primary);
+            padding: 8px 20px;
+            font-weight: 500;
+        }
+
+        .sticky-summary .btn-primary:hover {
+            background-color: #e43c1a;
+            border-color: #e43c1a;
+        }
+
+        /* Empty cart styling */
+        .empty-cart {
+            text-align: center;
+            padding: 50px 0;
+        }
+
+        .empty-cart i {
+            font-size: 4rem;
+            color: #ddd;
+            margin-bottom: 20px;
+        }
+
+        .empty-cart h4 {
+            color: #555;
+            margin-bottom: 10px;
+        }
+
+        .empty-cart p {
+            color: #777;
+        }
+
+        /* Ensure full viewport height */
+        html, body {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+            overflow-x: hidden; /* Prevent horizontal scroll */
+        }
+
+        /* Loading Overlay Styles */
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw; /* Use viewport width */
+            height: 100vh; /* Use viewport height */
+            background-color: rgba(0, 0, 0, 0.8);
+            z-index: 10000; /* Above all other elements */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            backdrop-filter: blur(5px);
+        }
+
+        #lottie-loading {
+            width: 100px;
+            height: 100px;
+            display: block;
+        }
+
+        .loading-text {
+            color: #fff;
+            font-size: 1rem;
+            font-weight: 500;
+            margin-top: 10px;
+            text-align: center;
+            max-width: 90%;
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.5; }
+            100% { opacity: 1; }
+        }
+
+        @media (max-width: 576px) {
+            #lottie-loading {
+                width: 80px;
+                height: 80px;
+            }
+            .loading-text {
+                font-size: 0.9rem;
+                margin-top: 8px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="bg-white shadow-sm py-3 sticky-top">
+        <div class="container">
+            <div class="d-flex align-items-center">
+                <a href="index.html" class="btn btn-outline-secondary me-3">
+                    <i class="fas fa-arrow-left"></i>
+                </a>
+                <h1 class="h4 mb-0 fw-bold">
+                    <span class="text-primary">Keranjang</span> Belanja
+                </h1>
+            </div>
+        </div>
+    </header>
+
+    <!-- Cart Content -->
+    <main class="container py-4 mb-5">
+        <div id="cartItems" class="mb-5">
+            <!-- Cart items will be loaded here -->
+        </div>
+    </main>
+
+    <!-- Checkout Summary Bar -->
+    <div class="sticky-summary">
+        <div class="container">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <h6 class="mb-0">Total Pembayaran</h6>
+                    <h5 class="mb-0 text-danger" id="totalPrice">Rp0</h5>
+                </div>
+                <button id="checkoutBtn" class="btn btn-primary btn-lg">
+                    <i class="fas fa-shopping-bag me-2"></i> Checkout
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div id="loadingOverlay" class="loading-overlay" style="display: none;">
+        <div id="lottie-loading"></div>
+        <p class="loading-text">Sedang menuju halaman checkout...</p>
+    </div>
+
+    <!-- External Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bodymovin/5.9.6/lottie.min.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+    <script src="js/cart.js"></script>
+</body>
+</html>
