@@ -1,44 +1,52 @@
-// /api/create-transaction.js
+import fetch from "node-fetch";
+
 export default async function handler(req, res) {
-  if (req.method !== "POST") {
-    return res.status(405).json({ error: "Method Not Allowed" });
-  }
-
   try {
-    console.log("📩 Request body:", req.body);
-    const apiKey = process.env.MAYAR_API_KEY;
+    const { amount, description, customer, notes } = req.body;
 
-    if (!apiKey) {
+    // 🔑 Pastikan API key ada
+    if (!process.env.MAYAR_API_KEY) {
       console.error("❌ MAYAR_API_KEY tidak ditemukan");
-      return res.status(500).json({ error: "API Key Mayar tidak ada" });
+      return res.status(500).json({ error: "MAYAR_API_KEY tidak ditemukan" });
     }
 
-    // ✅ langsung pakai fetch bawaan Node.js (tanpa node-fetch)
-    const response = await fetch("https://api.mayar.id/transactions", {
+    console.log("🔹 Request ke Mayar:", {
+      amount,
+      description,
+      customer,
+      notes
+    });
+
+    const response = await fetch("https://api.mayar.id/v1/transactions", {
       method: "POST",
       headers: {
-        "Authorization": `Bearer ${apiKey}`,
         "Content-Type": "application/json",
+        Authorization: `Bearer ${process.env.MAYAR_API_KEY}`,
       },
       body: JSON.stringify({
-        amount: req.body.amount,
-        description: req.body.description,
-        customer: req.body.customer,
-        notes: req.body.notes,
-        callback_url: "https://khanzza-billal.vercel.app/api/webhook",
+        amount,
+        description,
+        customer,
+        notes,
       }),
     });
 
-    const data = await response.json();
-    console.log("📦 Response dari Mayar:", data);
+    const text = await response.text(); // Ambil raw response
+    console.log("📩 Response dari Mayar:", text);
 
-    if (!data.payment_url) {
-      return res.status(400).json({ error: "Gagal membuat transaksi", detail: data });
+    try {
+      const data = JSON.parse(text); // coba parse JSON
+      return res.status(response.status).json(data);
+    } catch (e) {
+      console.error("❌ Response bukan JSON:", text);
+      return res.status(500).json({
+        error: "Invalid response dari Mayar",
+        raw: text,
+      });
     }
 
-    res.status(200).json(data);
   } catch (err) {
     console.error("❌ Error:", err);
-    res.status(500).json({ error: "Internal Server Error", detail: err.message });
+    res.status(500).json({ error: err.message });
   }
 }
