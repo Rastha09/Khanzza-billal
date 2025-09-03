@@ -1,47 +1,44 @@
-import fetch from "node-fetch";
-
+// /api/create-transaction.js
 export default async function handler(req, res) {
-  // ✅ Handle CORS
-  res.setHeader("Access-Control-Allow-Origin", "*");
-  res.setHeader("Access-Control-Allow-Methods", "POST, OPTIONS");
-  res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
-
-  if (req.method === "OPTIONS") {
-    return res.status(200).end();
-  }
-
   if (req.method !== "POST") {
-    return res.status(405).json({ error: "Method not allowed" });
+    return res.status(405).json({ error: "Method Not Allowed" });
   }
 
   try {
-    const { amount, description, customer, notes } = req.body;
+    console.log("📩 Request body:", req.body);
+    const apiKey = process.env.MAYAR_API_KEY;
 
+    if (!apiKey) {
+      console.error("❌ MAYAR_API_KEY tidak ditemukan");
+      return res.status(500).json({ error: "API Key Mayar tidak ada" });
+    }
+
+    // ✅ langsung pakai fetch bawaan Node.js (tanpa node-fetch)
     const response = await fetch("https://api.mayar.id/transactions", {
       method: "POST",
       headers: {
-        "Authorization": `Bearer ${process.env.MAYAR_API_KEY}`, // 🔑 API KEY dari Vercel env
+        "Authorization": `Bearer ${apiKey}`,
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        amount,
-        description,
-        customer,
-        notes,
-        callback_url: `${process.env.BASE_URL}/api/webhook`, // ✅ Webhook URL
+        amount: req.body.amount,
+        description: req.body.description,
+        customer: req.body.customer,
+        notes: req.body.notes,
+        callback_url: "https://khanzza-billal.vercel.app/api/webhook",
       }),
     });
 
     const data = await response.json();
+    console.log("📦 Response dari Mayar:", data);
 
     if (!data.payment_url) {
-      console.error("Mayar error:", data);
-      return res.status(400).json({ error: "Failed to create transaction" });
+      return res.status(400).json({ error: "Gagal membuat transaksi", detail: data });
     }
 
-    return res.status(200).json(data);
+    res.status(200).json(data);
   } catch (err) {
-    console.error("Server error:", err);
-    return res.status(500).json({ error: "Internal server error" });
+    console.error("❌ Error:", err);
+    res.status(500).json({ error: "Internal Server Error", detail: err.message });
   }
 }
