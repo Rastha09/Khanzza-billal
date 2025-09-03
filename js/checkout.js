@@ -296,12 +296,12 @@ async function placeOrder() {
       }
 
       // Request ke backend untuk buat transaksi Mayar
-      const response = await fetch("https://us-central1-makka-bakerry.cloudfunctions.net/create-transaction", {
+      const response = await fetch("https://khanzza-billal.vercel.app/api/create-transaction", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           amount: total,
-          description: "Pembelian di Makka Bakerry",
+          description: "Pembelian di Khanzza Billal",
           customer: {
             name: shippingInfo.nama,
             email: user.email || "customer@example.com",
