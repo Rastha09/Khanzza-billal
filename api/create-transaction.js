@@ -1,3 +1,4 @@
+// api/create-transaction.js
 export default async function handler(req, res) {
   try {
     const { amount, description, customer, notes } = req.body;
@@ -12,10 +13,11 @@ export default async function handler(req, res) {
       amount,
       description,
       customer,
-      notes
+      notes,
     });
 
-    const response = await fetch("https://api.mayar.id/v1/transactions", {
+    // ✅ Gunakan endpoint sesuai dokumen (Production)
+    const response = await fetch("https://api.mayar.id/hl/v1/transactions", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -42,7 +44,6 @@ export default async function handler(req, res) {
         raw: text,
       });
     }
-
   } catch (err) {
     console.error("❌ Error:", err);
     res.status(500).json({ error: err.message });
