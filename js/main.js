@@ -278,3 +278,28 @@ document.addEventListener('DOMContentLoaded', () => {
     updateCartCount();
     searchInput.addEventListener('input', searchProducts);
 });
+
+        // Script untuk mengupdate indikator testimonial
+        document.addEventListener('DOMContentLoaded', function() {
+            const testimonialCarousel = document.getElementById('testimonialCarousel');
+            const indicators = document.querySelectorAll('.testimonial-indicator');
+            
+            testimonialCarousel.addEventListener('slid.bs.carousel', function(event) {
+                const activeIndex = event.to;
+                indicators.forEach((indicator, index) => {
+                    if (index === activeIndex) {
+                        indicator.classList.add('active');
+                    } else {
+                        indicator.classList.remove('active');
+                    }
+                });
+            });
+            
+            // Klik pada indikator
+            indicators.forEach((indicator, index) => {
+                indicator.addEventListener('click', function() {
+                    const carousel = bootstrap.Carousel.getInstance(testimonialCarousel);
+                    carousel.to(index);
+                });
+            });
+        });

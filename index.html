@@ -201,7 +201,6 @@
         .carousel-control-prev,
         .carousel-control-next {
             width: 10%;
-            background-color: rgba(0, 0, 0, 0.4);
             opacity: 0.7;
             transition: opacity 0.3s;
         }
@@ -310,6 +309,156 @@
 
             .auth-box {
                 padding: 1.5rem;
+            }
+        }
+        
+                /* New Testimonial Styles */
+        .testimonial-section {
+            background-color: #f8f9fa;
+            padding: 60px 0;
+        }
+
+        .testimonial-card {
+            background-color: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+            transition: transform 0.3s, box-shadow 0.3s;
+            height: 100%;
+        }
+
+        .testimonial-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.12);
+        }
+
+        .testimonial-avatar {
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid #28a745;
+            margin-right: 15px;
+        }
+
+        .testimonial-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .testimonial-name {
+            font-weight: 600;
+            font-size: 1.1rem;
+            margin-bottom: 5px;
+        }
+
+        .testimonial-location {
+            color: #6c757d;
+            font-size: 0.9rem;
+        }
+
+        .testimonial-text {
+            font-style: italic;
+            color: #495057;
+            line-height: 1.6;
+            position: relative;
+            padding: 0 10px;
+        }
+
+        .testimonial-text::before,
+        .testimonial-text::after {
+            content: """;
+            font-size: 3rem;
+            color: #e9ecef;
+            position: absolute;
+            line-height: 1;
+        }
+
+        .testimonial-text::before {
+            top: -15px;
+            left: -5px;
+        }
+
+        .testimonial-text::after {
+            content: """;
+            bottom: -30px;
+            right: -5px;
+        }
+
+        .testimonial-rating {
+            color: #ffc107;
+            margin-bottom: 15px;
+            font-size: 0.9rem;
+        }
+
+        .testimonial-product {
+            font-size: 0.85rem;
+            color: #6c757d;
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px solid #e9ecef;
+        }
+
+        .testimonial-product strong {
+            color: #495057;
+        }
+
+        .testimonial-date {
+            font-size: 0.8rem;
+            color: #adb5bd;
+            text-align: right;
+            margin-top: 10px;
+        }
+
+        .testimonial-controls {
+            margin-top: 30px;
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .testimonial-indicator {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background-color: #dee2e6;
+            cursor: pointer;
+            transition: background-color 0.3s, transform 0.3s;
+        }
+
+        .testimonial-indicator.active {
+            background-color: #28a745;
+            transform: scale(1.2);
+        }
+
+        .section-title {
+            position: relative;
+            padding-bottom: 15px;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 3px;
+            background-color: #28a745;
+        }
+
+        @media (max-width: 768px) {
+            .testimonial-header {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .testimonial-avatar {
+                margin-right: 0;
+                margin-bottom: 10px;
             }
         }
     </style>
@@ -625,6 +774,134 @@
                 </div>
             </div>
         </section>
+        
+            <section class="testimonial-section" id="testimonial">
+        <div class="container">
+            <h2 class="text-center section-title">Testimonial Pelanggan</h2>
+            <p class="text-center mb-5">Lihat apa kata pelanggan tentang produk kami</p>
+            
+            <div class="row">
+                <div class="col-12">
+                    <div id="testimonialCarousel" class="carousel slide" data-bs-ride="carousel">
+                        <div class="carousel-inner">
+                            <!-- Testimonial 1 -->
+                            <div class="carousel-item active">
+                                <div class="row justify-content-center">
+                                    <div class="col-md-10 col-lg-8">
+                                        <div class="testimonial-card">
+                                            <div class="testimonial-header">
+                                                <img src="https://randomuser.me/api/portraits/women/32.jpg" alt="Customer" class="testimonial-avatar" onerror="this.src='https://via.placeholder.com/70?text=CS'">
+                                                <div>
+                                                    <div class="testimonial-name">Diana Sari</div>
+                                                    <div class="testimonial-location">Jakarta Utara</div>
+                                                </div>
+                                            </div>
+                                            <div class="testimonial-rating">
+                                                <i class="fas fa-star"></i>
+                                                <i class="fas fa-star"></i>
+                                                <i class="fas fa-star"></i>
+                                                <i class="fas fa-star"></i>
+                                                <i class="fas fa-star"></i>
+                                            </div>
+                                            <p class="testimonial-text">
+                                                Rotinya selalu fresh dan enak banget! Pesen tiap minggu buat sarapan keluarga. 
+                                                Roti abonnya jadi favorit suami, sementara anak-anak suka yang coklat.
+                                            </p>
+                                            <div class="testimonial-product">
+                                                Membeli: <strong>Roti Abon Panjang, Roti Keju Isi Coklat</strong>
+                                            </div>
+                                            <div class="testimonial-date">2 hari yang lalu</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Testimonial 2 -->
+                            <div class="carousel-item">
+                                <div class="row justify-content-center">
+                                    <div class="col-md-10 col-lg-8">
+                                        <div class="testimonial-card">
+                                            <div class="testimonial-header">
+                                                <img src="https://randomuser.me/api/portraits/men/45.jpg" alt="Customer" class="testimonial-avatar" onerror="this.src='https://via.placeholder.com/70?text=CS'">
+                                                <div>
+                                                    <div class="testimonial-name">Budi Santoso</div>
+                                                    <div class="testimonial-location">Tangerang</div>
+                                                </div>
+                                            </div>
+                                            <div class="testimonial-rating">
+                                                <i class="fas fa-star"></i>
+                                                <i class="fas fa-star"></i>
+                                                <i class="fas fa-star"></i>
+                                                <i class="fas fa-star"></i>
+                                                <i class="fas fa-star-half-alt"></i>
+                                            </div>
+                                            <p class="testimonial-text">
+                                                Pengiriman cepat dan packing rapi. Rotinya masih hangat waktu sampai. 
+                                                Enak banget roti sosisnya, rasa dagingnya terasa dan sausnya pas tidak terlalu manis.
+                                            </p>
+                                            <div class="testimonial-product">
+                                                Membeli: <strong>Roti Isi Sosis, Roti Pisang Coklat</strong>
+                                            </div>
+                                            <div class="testimonial-date">5 hari yang lalu</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Testimonial 3 -->
+                            <div class="carousel-item">
+                                <div class="row justify-content-center">
+                                    <div class="col-md-10 col-lg-8">
+                                        <div class="testimonial-card">
+                                            <div class="testimonial-header">
+                                                <img src="https://randomuser.me/api/portraits/women/68.jpg" alt="Customer" class="testimonial-avatar" onerror="this.src='https://via.placeholder.com/70?text=CS'">
+                                                <div>
+                                                    <div class="testimonial-name">Rina Wijaya</div>
+                                                    <div class="testimonial-location">Jakarta Barat</div>
+                                                </div>
+                                            </div>
+                                            <div class="testimonial-rating">
+                                                <i class="fas fa-star"></i>
+                                                <i class="fas fa-star"></i>
+                                                <i class="fas fa-star"></i>
+                                                <i class="fas fa-star"></i>
+                                                <i class="fas fa-star"></i>
+                                            </div>
+                                            <p class="testimonial-text">
+                                                Sudah langganan lebih dari setahun. Kualitas rotinya selalu konsisten dan harganya terjangkau. 
+                                                Pelayanannya juga ramah, respon cepat kalau tanya-tanya via WA.
+                                            </p>
+                                            <div class="testimonial-product">
+                                                Membeli: <strong>Roti Roll Abon, Roti Keju Slice Isi Blueberry</strong>
+                                            </div>
+                                            <div class="testimonial-date">1 minggu yang lalu</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Carousel Controls -->
+                        <button class="carousel-control-prev" type="button" data-bs-target="#testimonialCarousel" data-bs-slide="prev">
+                            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                            <span class="visually-hidden">Previous</span>
+                        </button>
+                        <button class="carousel-control-next" type="button" data-bs-target="#testimonialCarousel" data-bs-slide="next">
+                            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                            <span class="visually-hidden">Next</span>
+                        </button>
+                        
+                        <!-- Custom Indicators -->
+                        <div class="testimonial-controls">
+                            <div class="testimonial-indicator active" data-bs-target="#testimonialCarousel" data-bs-slide-to="0"></div>
+                            <div class="testimonial-indicator" data-bs-target="#testimonialCarousel" data-bs-slide-to="1"></div>
+                            <div class="testimonial-indicator" data-bs-target="#testimonialCarousel" data-bs-slide-to="2"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
 
         <!-- About Us Section -->
         <section class="py-4 bg-light" id="tentang-kami">
