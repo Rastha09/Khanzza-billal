@@ -127,18 +127,31 @@
           </div>
         </div>
 
-        <!-- Payment Options -->
-        <div class="card mb-4">
-          <div class="card-body">
-            <h5 class="card-title mb-4">
-              <i class="fas fa-credit-card me-2 text-primary"></i> Metode Pembayaran
-            </h5>
-            <div id="paymentOptionsContainer">
-              <!-- opsi pembayaran render dinamis -->
-            </div>
-          </div>
-        </div>
-      </div>
+<!-- Payment Options -->
+<div class="card mb-4">
+  <div class="card-body">
+    <h5 class="card-title mb-4">
+      <i class="fas fa-credit-card me-2 text-primary"></i> Metode Pembayaran
+    </h5>
+    <div id="paymentOptionsContainer"></div>
+
+    <!-- 🔹 Tambahan: Pilih channel pembayaran Mayar -->
+    <div id="mayarPaymentTypeContainer" class="mt-3" style="display:none;">
+      <label for="mayarPaymentType" class="form-label">Pilih Channel Pembayaran</label>
+      <select id="mayarPaymentType" class="form-select">
+        <option value="qris" selected>QRIS (QR Code Semua e-Wallet)</option>
+        <option value="bca_va">Virtual Account BCA</option>
+        <option value="bni_va">Virtual Account BNI</option>
+        <option value="bri_va">Virtual Account BRI</option>
+        <option value="mandiri_va">Virtual Account Mandiri</option>
+        <option value="shopeepay">ShopeePay</option>
+        <option value="gopay">GoPay</option>
+        <option value="ovo">OVO</option>
+        <option value="dana">Dana</option>
+      </select>
+    </div>
+  </div>
+</div>
 
       <!-- Right Column -->
       <div class="col-lg-4">
