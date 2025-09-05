@@ -195,8 +195,7 @@ function validateShippingForm() {
 }
 
 // ======================
-// 🔹 Place Order
-// ======================
+// Place Order
 async function placeOrder() {
   const shippingInfo = validateShippingForm();
   if (!shippingInfo) return;
@@ -204,7 +203,7 @@ async function placeOrder() {
   const user = auth.currentUser;
   const subtotal = cart.reduce((s, i) => s + i.price * i.quantity, 0);
   const total = subtotal + getDeliveryCost();
-  const notes = customerNotes.value.trim();
+  const notes = customerNotes.value.trim() || "-";
 
   const orderData = {
     userId: user.uid,
@@ -222,9 +221,11 @@ async function placeOrder() {
   if (selectedPaymentMethod === "Transfer") {
     try {
       loadingOverlay.style.display = "flex";
+
       const paymentType = document.getElementById("mayarPaymentType")?.value || "qris";
 
-      const response = await fetch("https://khanzza-billal.vercel.app/api/create-transaction", {
+      // 🔹 Kirim request ke backend -> Mayar
+      const response = await fetch("/api/create-transaction", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -241,19 +242,17 @@ async function placeOrder() {
       const data = await response.json();
       console.log("📩 Mayar Response:", data);
 
-      if (data.data?.checkoutUrl) {
+      if (data.statusCode === 200 && data.data?.link) {
+        // 🔹 Simpan order ke Firebase
         await database.ref("orders").push({
           ...orderData,
           status: "waiting_payment",
-          mayarTransactionId: data.data.id || null,
-          paymentType: data.data.paymentType,
-          checkoutUrl: data.data.checkoutUrl,
-          vaNumber: data.data.va?.vaNumber || null,
-          qrisString: data.data.qris?.qrString || null,
-          expiryDate: data.data.va?.expiryDate || data.data.qris?.expiryDate || null,
+          mayarTransactionId: data.data.id,
+          mayarCheckoutUrl: data.data.link,
         });
 
-        window.location.href = data.data.checkoutUrl;
+        // Redirect user ke halaman pembayaran Mayar
+        window.location.href = data.data.link;
       } else {
         Swal.fire("Error", data.messages || "Gagal membuat transaksi Mayar", "error");
       }
@@ -263,7 +262,7 @@ async function placeOrder() {
       loadingOverlay.style.display = "none";
     }
   } else {
-    // COD
+    // 🔹 COD langsung simpan ke Firebase
     await database.ref("orders").push(orderData);
     Swal.fire("Pesanan Dibuat!", "Pesanan berhasil disimpan", "success").then(() => {
       cart = [];
